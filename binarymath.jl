@@ -32,3 +32,5 @@ function binary_multiply(input, counter)
     end
     accumulator
 end
+
+binary_multiply(0b0000_1100,0b1110_1010)

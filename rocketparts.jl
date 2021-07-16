@@ -75,3 +75,14 @@ function update!(r::Rocket, Δt::Number)
    mflow = mass_flow(thrust(r.engine), Isp(r.engine))
    r.tank.propellant -= min(mflow * Δt, r.tank.propellant)
 end
+
+#Example
+
+second_stage = Rocket(SpaceProbe(22.8e6), 
+                     Tank(4e3, 111.5e3), 
+                     Engine(845e3, 348, 470)
+                     )
+
+first_stage = Rocket(second_stage, 
+                     Tank(22e3, 433e3), 
+                     EngineCluster(Engine(845e3, 282, 470), 9))

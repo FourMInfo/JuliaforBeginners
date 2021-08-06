@@ -1,4 +1,4 @@
-abstract type Angle end
+abstract type Angle <: Number end
 
 struct Radian <: Angle
     radians::Float64
@@ -97,3 +97,8 @@ end
 # Stacktrace:
 #  [1] top-level scope
 #    @ REPL[38]:1
+# Solution
+# For the solution to the problem see the discussion here
+# https://discourse.julialang.org/t/type-promotion-not-working-as-expected/65944
+# one solution to get the promotion to work is to subtype Angle from Number as above
+# Adding +(Angle, Angle) is probably more in the spirit of what Engheim is trying to do

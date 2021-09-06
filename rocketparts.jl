@@ -78,11 +78,11 @@ end
 
 #Example
 
-second_stage = Rocket(SpaceProbe(22.8e6), 
-                     Tank(4e3, 111.5e3), 
-                     Engine(845e3, 348, 470)
-                     )
+# second_stage = Rocket(SpaceProbe(22.8e6), 
+#                      Tank(4e3, 111.5e3), 
+#                      Engine(845e3, 348, 470)
+#                      )
 
-first_stage = Rocket(second_stage, 
-                     Tank(22e3, 433e3), 
-                     EngineCluster(Engine(845e3, 282, 470), 9))
+# first_stage = Rocket(second_stage, 
+#                      Tank(22e3, 433e3), 
+#                      EngineCluster(Engine(845e3, 282, 470), 9))

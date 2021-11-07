@@ -10,10 +10,10 @@ using LinearAlgebra
 # define as row
 unit_cost = [6, 4, 3, 2, 1]
 # diagnol matrix times a vector gives a vector
-Diagonal(unit_cost) * amount
+Diagonal(unit_cost) * amount_r
 
 #this obviously gives same answer as row 7 since transpose makes it a column
-transpose(unit_cost) * amount
+transpose(unit_cost) * amount_r
 
 # matrix with different orders in eacch column
 amounts =  [6 1 10;
@@ -58,7 +58,7 @@ I*z
 reverse(z)
 2*reverse(z)
 # be careful with inverse
-inv(z)
+#inv(z) # commented out see below
 # this gives you a singular exception. If you take the determinant you see it is ) which explains why
 det(z)
 # a simple change solves the problem
@@ -123,3 +123,81 @@ fill(12, 3, 4)  #Int64
 fill(12.0, 3, 4) #Float64
 fill(1//2, 3, 4) #Rational{Int64}
 fill(0x4, 3, 4) #Int8
+
+# in the example on page 249 for vector addition this is what you are really seeing:
+u = [4,2]  # from the origin [0,0]
+v = [-1,1] # from the starting point [4,2]
+u + v 
+# yields:
+# 2-element Vector{Int64}:
+# 3
+# 3
+# scalar addition needs to be done per element
+u .+ 1
+# yields:
+# 2-element Vector{Int64}:
+# 5
+# 3
+# assignment of vectors
+w = v
+w == v # true
+w[1] = 1 # change w
+w == v # true
+v[2] = 2 # change v
+w == v # true
+# element wise assignment has different result in that w is NOT pointing to unit
+# w .= u is equivalent to w[1] = 4 and w[2] = 2 which obviously has no impact on u
+w .= u
+w == v # true
+w == u # true temporarily
+v == u # true temporarily
+# but
+w[1] = 1 # change w
+w == v # true
+w == u # false
+v == u # false
+# subtraction
+v = [-1, 1]
+# next two give same result. This also shows multiplying vector by scaler works as expected
+u + (-v)
+u - v
+# vector rotation
+x = [3, 4]
+xm = 3*[1, 0] + 4*[0, 1]
+x == xm # true
+# rotate x 90 degrees
+xmr = 3*[0, 1] + 4*[-1, 0]
+# do it as matrix multiplication - NB: Engheim got the matrix wrong 
+# [0,1] and [-1, 0] are columns not rows so the matrix looks like A below
+A = [ 0 -1;
+      1 0]
+# a vector is a column not a row
+# multiply each row in the vector x times a column in A and add the two vectors together (as in xmr)
+# 3 is first row times [0, 1] + 4 is second row * [-1,0] giving vector (column) [-4, 3]
+A*x == xmr # true
+
+
+#rotation(degrees)
+#Create a rotation matrix for rotating a 2D vector `deg` degrees.
+
+function rotation(deg::Real)
+  rad = deg2rad(deg)
+  cosθ = cos(rad)
+  sinθ = sin(rad)
+  
+  [cosθ -sinθ;
+   sinθ  cosθ] 
+end
+
+# create a Matrix for rotating a vector 90 degrees
+M = rotation(90)
+
+# create a saaple [x,y] vector and rotate 90 degrees
+v = [3, 4]
+M*v
+v2 = [3, 3]
+M*v2
+v3 = [3, 0]
+M*v3
+v4 = [0, 3]
+M*v4

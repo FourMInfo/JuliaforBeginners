@@ -108,7 +108,7 @@ iterate(r::Rocket) = r, r.payload
 iterate(ship::SpaceVehicle) = iterate(ship.active_stage)
 # define tuple method
 function iterate(::Union{Rocket, SpaceVehicle}, state)
-    if state == nothing || state isa NoPayload
+    if state === nothing || state isa NoPayload
         nothing
     else
         iterate(state)

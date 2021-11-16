@@ -201,3 +201,37 @@ v3 = [3, 0]
 M*v3
 v4 = [0, 3]
 M*v4
+
+# # Dot Product
+# # important you add "using LinearAlgebra" before running the following
+# a = [2, 3]
+# b = [3, 1]
+
+# # to get the dot product character type "a \cdot[tab] b" (i.e. thit the tab key)
+# a ⋅ b
+# transpose(a)*b
+# dot(a, b)
+
+# # Work equations
+# r = [3, 1]
+# # the norm is the sqrt of r ⋅ r which gives the length of the vector r
+# # u is a unit vector with same direction as r (divide r by its lenght 
+# # to get a vector lenght 1 with same direction as r)
+# u = r / norm(r)
+# # in the graph in the book Engheim shifts teh vector from the 0origin
+# F = [2, 3]
+# # the work
+# F ⋅ u
+# # from this equality “𝐅 ⋅ 𝐮 = |𝐅| cos θ " we can calulate the angle θ
+# θ = acos(F ⋅ u/norm(F))
+# # check the equality
+# F ⋅ u == norm(F) * cos(θ)
+# # substitute back the defintion of u
+# F ⋅ (r/norm(r)) == norm(F) * cos(θ)
+# # multiply norm(r) to both sides of the equation (there are rounding errors)
+# F ⋅ r ≈ norm(F) * norm(r) * cos(θ)
+# # Cross product
+# u = [6, 0, 0]
+# v = [3, 4, 0]
+# # ⨯ is \times
+# w = u ⨯ v

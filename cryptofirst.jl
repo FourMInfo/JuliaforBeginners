@@ -69,6 +69,8 @@ function decrypts(ch::Char, rupdict::Dict{Char, Char}, rlowdict::Dict{Char, Char
 end
 
 # example
+# upshuf=shuffle('A':'Z')
+# lowshuf=shuffle('a':'z')
 # julia> updict = Dict(zip('A':'Z', upshuf))
 # Dict{Char, Char} with 26 entries:
 #   'E' => 'D'

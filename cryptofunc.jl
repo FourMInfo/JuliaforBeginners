@@ -111,3 +111,57 @@ end
 
 # julia> decipher(emessage)
 # "Google sucks!"
+
+# Password Keeper
+mutable struct Vault
+    passwords::Dict{String, String}
+    encrypt::Function
+    decrypt::Function
+end
+
+function Vault(encrypter, decrypter)
+    Vault(Dict{String, String}(), encrypter, decrypter)
+end
+
+function addlogin!(vault::Vault, login::AbstractString, password::AbstractString)
+    vault.passwords[login] = vault.encrypt(password)
+end
+
+function getpassword(vault::Vault, login::AbstractString)
+    vault.decrypt(vault.passwords[login])
+end
+
+# Example
+# Caeser
+# julia> const s1 = 23
+# 23
+
+# julia> vault = Vault(encrypt(s1), decrypt(s1))
+# Vault(Dict{String, String}(), var"#1#3"{Int64}(23), var"#5#7"{Int64}(23))
+
+# julia> addlogin!(vault, "google", "BING")
+# "YFKD"
+
+# julia> getpassword(vault, "google")
+# "BING"
+
+# julia> addlogin!(vault, "amazon", "Secret!")
+# "Pbzobq!"
+
+# julia> getpassword(vault, "amazon")
+# "Secret!"
+
+# Substitution
+# julia> using Random
+
+# julia> dicts = makeshuffle()
+# (Dict('E' => 'X', 'Z' => 'A', 'X' => 'C', 'B' => 'W', 'C' => 'P', 'D' => 'U', 'A' => 'K', 'R' => 'G', 'G' => 'S', 'F' => 'Y'…), Dict('n' => 'q', 'f' => 'y', 'w' => 'j', 'd' => 'v', 'e' => 'c', 'o' => 'h', 'h' => 'w', 'j' => 'd', 'i' => 'p', 'k' => 'f'…))
+
+# julia> vaults = Vault(encrypt(dicts[1], dicts[2]), decrypt(dicts[1], dicts[2]))
+# Vault(Dict{String, String}(), var"#9#11"{Dict{Char, Char}, Dict{Char, Char}}(Dict('E' => 'X', 'Z' => 'A', 'X' => 'C', 'B' => 'W', 'C' => 'P', 'D' => 'U', 'A' => 'K', 'R' => 'G', 'G' => 'S', 'F' => 'Y'…), Dict('n' => 'q', 'f' => 'y', 'w' => 'j', 'd' => 'v', 'e' => 'c', 'o' => 'h', 'h' => 'w', 'j' => 'd', 'i' => 'p', 'k' => 'f'…)), var"#13#15"{Dict{Char, Char}, Dict{Char, Char}}(Dict('n' => 'l', 'f' => 'k', 'w' => 'h', 'd' => 'j', 'e' => 'p', 'o' => 'q', 'j' => 'w', 'y' => 'f', 'h' => 'o', 'r' => 'r'…), Dict('E' => 'L', 'Z' => 'H', 'X' => 'E', 'C' => 'X', 'B' => 'S', 'D' => 'O', 'A' => 'Z', 'R' => 'P', 'G' => 'R', 'Q' => 'K'…)))
+
+# julia> addlogin!(vaults, "apple", "My Super Secret!")
+# "Hk Bxecr Bcsrci!"
+
+# julia> getpassword(vaults, "apple")
+# "My Super Secret!"

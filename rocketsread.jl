@@ -46,3 +46,36 @@ end
 #   ("Rutherford", "Rocket Lab")    => SingleEngine(18.0, 303.0, 0.035)
 #   ("RS-25", "Aerojet Rocketdyne") => SingleEngine(1860.0, 366.0, 3.527)
 
+function load_engines_alt(path::AbstractString)
+    # this is the single line read option. I kept the dict since it seems more useful
+    rocket_engines = Dict{Tuple{String, String}, SingleEngine}()
+
+    open(path) do io
+        # read in the header line to skip it
+        readline(io)
+        # iterate with eachline over the rest of the file until hit EOF (using a map closure)
+        map(eachline(io)) do line
+            parts = split(line, ',')
+            name, company = parts[1:2]
+            basemass, basethrust, _, baseIsp = 
+                parse.(Float64, parts[3:end])
+            rocket_engines[(name,company)] = Engine(basethrust, baseIsp, basemass)
+        end
+    end
+
+    rocket_engines
+end
+
+# Examplejulia> include("rocketsread.jl")
+# load_engines_alt (generic function with 1 method)
+
+# julia> load_engines_alt("data/rocket-engines.csv")
+# Dict{Tuple{String, String}, SingleEngine} with 8 entries:
+#   ("LV-T30", "Kerbal")            => SingleEngine(205.16, 265.0, 1.25)
+#   ("BE-3PM ", "Blue Origin")      => SingleEngine(490.0, 310.0, 0.25)
+#   ("LV-T45 ", "Kerbal")           => SingleEngine(167.97, 250.0, 1.5)
+#   ("48-7S", "Kerbal")             => SingleEngine(16.88, 270.0, 0.1)
+#   ("Merlin 1D", "SpaceX")         => SingleEngine(845.0, 282.0, 0.47)
+#   ("RD-180", "NPO Energomash")    => SingleEngine(3830.0, 311.0, 5.48)
+#   ("Rutherford", "Rocket Lab")    => SingleEngine(18.0, 303.0, 0.035)
+#   ("RS-25", "Aerojet Rocketdyne") => SingleEngine(1860.0, 366.0, 3.527)

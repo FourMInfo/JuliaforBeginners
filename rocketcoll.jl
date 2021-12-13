@@ -8,6 +8,7 @@ mass(payload::NoPayload) = 0.0
 
 Rocket(tank::Tank, engine::Engine) = Rocket(NoPayload(), tank, engine)
 
+const nopayload = NoPayload()
 mutable struct SpaceVehicle
     active_stage::Payload
 end

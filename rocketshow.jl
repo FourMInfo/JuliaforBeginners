@@ -1,5 +1,8 @@
 include("rocketcoll.jl")
 
+# need to import show to extend. Without import we are shadowing show
+import Base: show
+
 const tab = "   "
 
 function show(io::IO, r::Rocket, depth::Integer = 0)
@@ -12,7 +15,18 @@ function show(io::IO, r::Rocket, depth::Integer = 0)
 
     if r.payload != nopayload
         println(io, ",")
-        show(io, r.payload, depth)            
+        # Engheim left out dealing with non-Rocket Payload
+        # recurse if payload is rocket
+        if typeof(r.payload) == Rocket
+            show(io, r.payload, depth)
+        else
+            # for "final" payloads just print out
+            println(io, tab^depth, "Payload(")
+            depth += 1
+            println(io, tab^depth, r.payload)        
+            depth -= 1
+            print(io, tab^depth, ")")   
+        end    
     end
     println(io)
 
@@ -21,6 +35,7 @@ function show(io::IO, r::Rocket, depth::Integer = 0)
 end
 
 function show(io::IO, engine::Engine, depth::Integer = 0)
+   # TODO: this function only handles SingleEngine not EngineCluster
    println(io, tab^depth, "Engine(")
    depth += 1
    println(io, tab^depth, 
@@ -52,17 +67,6 @@ function show(io::IO, tank::Tank, depth::Integer = 0)
    print(io, tab^depth, ")")        
 end
 
-# Engheim left out Payload multiple dispatch
-function show(io::IO, p::Payload, depth::Integer = 0)
-    println(io, tab^depth, "Payload(")
-    depth += 1
-
-    println(io, tab^depth, p)        
-    depth -= 1
-    print(io, tab^depth, ")")   
-end
-
-
 function show(io::IO, ship::SpaceVehicle)
      println(io, "SpaceVehicle(")
      show(io, ship.active_stage, 1)
@@ -71,9 +75,9 @@ function show(io::IO, ship::SpaceVehicle)
 end
 
 # Example
-# not sure why you have to add stdout, since engheim claims thats
-# impicit in the REPL, but didnt work without it
-# julia> show(stdout, ship)
+# julia> show(ship) 
+# You don't actually need the show you can just type
+# julia> ship
 # SpaceVehicle(
 #    Rocket(
 #       Tank(

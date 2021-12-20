@@ -1,0 +1,4 @@
+This is the first line without which you get an EOF
+$y = 10x + b$
+$$y = 10x + b$$
+This is the last line

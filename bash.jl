@@ -277,4 +277,93 @@ end
 # Directories in data/animals/vertebrates/mammals/human
 # Files in data/animals/vertebrates/mammals/human
 # data/animals/vertebrates/mammals/human/description.txt
-data/animals/vertebrates/mammals/human/looks.jpg
+# data/animals/vertebrates/mammals/human/looks.jpg
+function replace_github_math(filename)
+    out = IOBuffer()
+    open(filename) do io
+        # need to change Engheim's version to handle non-markdown text at the end of the file
+        # as in our example book.txt
+        while true
+            # read and then write out anything till first '$' you find and swallow '$'
+            s = readuntil(io, '$')
+            if eof(io)
+                write(out, s)
+                break
+            end
+            write(out, s)
+            # this tests if the line you just read is Markua
+            # considering that the exercise is converting Pandoc to Markua this is confusing.
+            # why would there be markua and Pandoc in same file?
+            # Perhaps Engheim wanted to illustrate the continue
+            # So I am commenting this out and giving two alternate functions
+            #if s[end] == '`'
+            #    write(out, '$')
+            #    continue
+            #end
+            
+            mark(io)
+            s = readuntil(io, '$')
+            
+            if isempty(s)
+                reset(io)
+                # need to use raw since $ is for string interpolation
+                s = readuntil(io, raw"$$")
+                write(out, '$')
+                write(out, s)
+                write(out, raw"$$")
+                continue
+            end
+            
+            write(out, '`')
+            write(out, s)
+            write(out, raw"`$")
+        end
+    end
+    write_file(out, "markau", filename)
+end
+
+function replace_markau_math(filename)
+    out = IOBuffer()
+    open(filename) do io
+        # need to change Engheim's version to handle non-markdown text at the end of the file
+        # as in our example book.txt
+        while true
+            # read and then write out anything till first '$' you find and swallow '$'
+            s = readuntil(io, '`')
+            if eof(io)
+                write(out, s)
+                break
+            end
+            write(out, s)
+            s = readuntil(io, '`')
+            write(out, '$')
+            write(out, s)
+        end
+    end
+    write_file(out, "github", filename)
+end
+
+function write_file(out::IOBuffer, filetype, filename)
+    # write out buffer
+    seekstart(out)
+    # write out to a different filename, don't overwrite original
+    f = splitext(filename)
+    rfilename = f[1]*filetype*f[2]
+    s = read(out, String)
+    open(rfilename, "w") do io
+        write(io, s)
+    end
+end
+
+# Example
+# julia> include("bash.jl")
+# write_file (generic function with 2 methods)
+# Convert to Markau
+# julia> replace_github_math("data/book.txt")
+# 104
+# Convert back to GITHUB
+# julia> replace_markau_math("data/bookmarkau.txt")
+# 103
+# If it works properly the last version should b identical to the original
+# (base) ➜  JuliaforBeginners git:(main) ✗ diff data/book.txt data/bookmarkaugithub.txt 
+# (base) ➜  JuliaforBeginners git:(main) ✗ $ Yay! It is!

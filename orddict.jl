@@ -3,7 +3,7 @@ import Base: getindex, setindex!, get, delete!,
     getproperty, setproperty!,
     haskey, isempty,
     union,
-    copy
+    copy, push!
 
 mutable struct OrdDict <: AbstractDict{Symbol,String}
     items::Vector{Pair{Symbol, String}}
@@ -72,7 +72,7 @@ function getproperty(a::OrdDict, key::Symbol)
     end
 end
 
-function setproperty!(a::OrdDict, key::Symbol, value::AbstractString)
+function setproperty!(a::OrdDict, key::Symbol, value::String)
     if key == :items
         setfield!(a, :item, value)
     else
